@@ -546,5 +546,7 @@ class Main {
 
 ## References
 - [[Visualgo] Linked List (Visualization)](https://visualgo.net/en/list)
-- [[Stanford CS Library] Linked List Basics & Problems](http://cslibrary.stanford.edu/103/LinkedListBasics.pdf)
+- <a href="http://cslibrary.stanford.edu/103/LinkedListBasics.pdf" data-proofer-ignore>
+    [Stanford CS Library] Linked List Basics & Problems
+  </a>
 - [[OpenJDK] java.util.LinkedList Source Code](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
