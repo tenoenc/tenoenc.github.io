@@ -80,7 +80,7 @@ print(length(head)) # 3
 
 `head`를 직접 움직이지 않고, `current`를 지연 변수에 복사해서 움직이는 게 핵심입니다. 이 패턴은 데이터를 찾거나, 출력하거나, 수정하는 모든 로직의 기본이 됩니다.
 
-> `current = current.next`를 잊어버리면 무한 루프에 빠질 수 있습니다
+> `current = current.next`를 잊어버리면 무한 루프에 빠질 수 있습니다.
 {: .prompt-warning }
 
 ## 작동하지 않는 Push
@@ -286,14 +286,20 @@ def copy_list_recursive(head):
 
 ### 1. Fields
 
-더미 노드 없이 직접 관리하여 메모리를 절약합니다. 더미 노드를 쓰지 않으므로 `first`와 `last`는 `null`일 수 있습니다.
+`first`와 `last`는 실제 데이터가 아닌 Dummy 역할만 수행합니다.
 
 ```java
 public class MyLinkedList<E> implements Iterable<E> {
     private int size = 0;
 
-    private Node<E> first;
-    private Node<E> last;
+    private final Node<E> first;
+    private final Node<E> last;
+
+    public MyLinkedList() {
+        first = new Node<>(null, null, null);
+        last = new Node<>(first, null, null);
+        first.next = last;
+    }
 }
 ```
 
@@ -319,9 +325,76 @@ public class MyLinkedList<E> implements Iterable<E> {
 
 ### 3. Methods
 
-#### linkLast()
+#### linkLast(), linkBefore()
 
-리스트의 가장 뒤에 노드를 추가(`append`)합니다.
+`linkLast()`는 리스트의 가장 뒤에 노드를 추가(`append`)하고, `linkBefore()`는 특정 노드(`succ`)의 앞에 삽입(`insert`)합니다.
+
+```java
+public class MyLinkedList<E> implements Iterable<E> {
+    void linkLast(E e) {
+        linkBefore(e, last);
+    }
+
+    void linkBefore(E e, Node<E> succ) {
+        final Node<E> pred = succ.prev;
+        final Node<E> newNode = new Node<>(pred, e, succ);
+        succ.prev = newNode;
+        pred.next = newNode;
+        size++;
+    }
+}
+```
+
+#### unlink()
+
+노드 `x`를 삭제(`unlink`)합니다. GC 효율을 위해 내부 참조를 모두 `null`로 지웁니다.
+
+```java
+public class MyLinkedList<E> implements Iterable<E> {
+    E unlink(Node<E> x) {
+        final E element = x.item;
+        final Node<E> next = x.next;
+        final Node<E> prev = x.prev;
+
+        prev.next = next;
+        next.prev = prev;
+
+        x.item = null;
+        x.prev = null;
+        x.next = null;
+        size--;
+        return element;
+    }
+}
+```
+
+#### node()
+
+인덱스가 절반보다 앞이면 앞에서, 뒤면 뒤에서 탐색합니다.
+
+```java
+public class MyLinkedList<E> implements Iterable<E> {
+    Node<E> node(int index) {
+        if (index < size / 2) {
+            Node<E> x = first;
+            for (int i = 0; i < index; i++) {
+                x = x.next;
+            }
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--) {
+                x = x.prev;
+            }
+            return x;
+        }
+    }
+}
+```
+
+#### 만약 Dummy Node가 없다면?
+
+각 메서드에 불필요한 `null` 체크가 발생합니다.
 
 ```java
 public class MyLinkedList<E> implements Iterable<E> {
@@ -338,15 +411,7 @@ public class MyLinkedList<E> implements Iterable<E> {
 
         size++;
     }
-}
-```
 
-#### linkBefore()
-
-특정 노드(`succ`)의 앞에 삽입(`insert`)합니다.
-
-```java
-public class MyLinkedList<E> implements Iterable<E> {
     void linkBefore(E e, Node<E> succ) {
         // assert succ != null
         final Node<E> pred = succ.prev;
@@ -361,15 +426,7 @@ public class MyLinkedList<E> implements Iterable<E> {
 
         size++;
     }
-}
-```
 
-#### unlink()
-
-노드 `x`를 삭제(`unlink`)합니다. GC 효율을 위해 내부 참조를 모두 `null`로 지웁니다.
-
-```java
-public class MyLinkedList<E> implements Iterable<E> {
     E unlink(Node<E> x) {
         // assert x != null
         final E element = x.item;
@@ -394,15 +451,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         size--;
         return element;
     }
-}
-```
 
-#### node()
-
-인덱스가 절반보다 앞이면 앞에서, 뒤면 뒤에서 탐색합니다.
-
-```java
-public class MyLinkedList<E> implements Iterable<E> {
     Node<E> node(int index) {
         if (index < size / 2) {
             Node<E> x = first;
@@ -476,6 +525,26 @@ public class MyLinkedList<E> implements Iterable<E> {
 }
 ```
 
+#### toString()
+
+```java
+public class MyLinkedList<E> implements Iterable<E> {
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Node<E> curr = first.next;
+        while (curr != last) {
+            sb.append(curr.item);
+            if (curr.next != last) sb.append(", ");
+            curr = curr.next;
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+}
+```
+
 #### Helpers
 
 ```java
@@ -533,7 +602,7 @@ class Main {
 }
 ```
 
-> [여기](/assets/code/MyLinkedList.java)에서 전체 코드를 확인할 수 있습니다.
+> [여기](https://github.com/tenoenc/tenoenc.github.io/blob/main/assets/code/MyLinkedList.java)에서 전체 코드를 확인할 수 있습니다.
 {: .prompt-info }
 
 ## Summary
@@ -542,7 +611,7 @@ class Main {
 
 1. Memory Model: 변수는 객체를 가리키는 참조입니다.
 2. Pointer Manipulation: `current` 같은 임시 포인터를 적극적으로 활용합니다.
-3. Dummy Node: `if head in None` 같은 지저분한 코드를 없애는 최고의 패턴으로 활용합니다.
+3. Dummy Node: `if head is None` 같은 지저분한 코드를 없애는 최고의 패턴으로 활용합니다.
 
 ## References
 - [[Visualgo] Linked List (Visualization)](https://visualgo.net/en/list)

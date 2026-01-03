@@ -4,8 +4,8 @@ import java.util.NoSuchElementException;
 public class MyLinkedList<E> implements Iterable<E> {
     private int size = 0;
 
-    private Node<E> first;
-    private Node<E> last;
+    private final Node<E> first;
+    private final Node<E> last;
 
     private static class Node<E> {
         E item;
@@ -19,69 +19,48 @@ public class MyLinkedList<E> implements Iterable<E> {
         }
     }
 
+    public MyLinkedList() {
+        first = new Node<>(null, null, null);
+        last = new Node<>(first, null, null);
+        first.next = last;
+    }
+
     void linkLast(E e) {
-        final Node<E> l = last;
-        final Node<E> newNode = new Node<>(l, e, null);
-        last = newNode;
-
-        if (l == null) {
-            first = newNode;
-        } else {
-            l.next = newNode;
-        }
-
-        size++;
+        linkBefore(e, last);
     }
 
     void linkBefore(E e, Node<E> succ) {
-        // assert succ != null
         final Node<E> pred = succ.prev;
         final Node<E> newNode = new Node<>(pred, e, succ);
         succ.prev = newNode;
-
-        if (pred == null) {
-            first = newNode;
-        } else {
-            pred.next = newNode;
-        }
-
+        pred.next = newNode;
         size++;
     }
 
     E unlink(Node<E> x) {
-        // assert x != null
         final E element = x.item;
         final Node<E> next = x.next;
         final Node<E> prev = x.prev;
 
-        if (prev == null) {
-            first = next;
-        } else {
-            prev.next = next;
-            x.prev = null;
-        }
-
-        if (next == null) {
-            last = next;
-        } else {
-            next.prev = prev;
-            x.next = null;
-        }
+        prev.next = next;
+        next.prev = prev;
 
         x.item = null;
+        x.prev = null;
+        x.next = null;
         size--;
         return element;
     }
 
     Node<E> node(int index) {
         if (index < size / 2) {
-            Node<E> x = first;
+            Node<E> x = first.next; 
             for (int i = 0; i < index; i++) {
                 x = x.next;
             }
             return x;
         } else {
-            Node<E> x = last;
+            Node<E> x = last.prev;
             for (int i = size - 1; i > index; i--) {
                 x = x.prev;
             }
@@ -96,7 +75,6 @@ public class MyLinkedList<E> implements Iterable<E> {
 
     public void add(int index, E element) {
         checkPositionIndex(index);
-
         if (index == size) {
             linkLast(element);
         } else {
@@ -142,7 +120,7 @@ public class MyLinkedList<E> implements Iterable<E> {
     public Iterator<E> iterator() {
         return new Iterator<E>() {
             private Node<E> lastReturned;
-            private Node<E> next = first;
+            private Node<E> next = first.next;
             private int nextIndex = 0;
 
             @Override
@@ -155,7 +133,6 @@ public class MyLinkedList<E> implements Iterable<E> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-
                 lastReturned = next;
                 next = next.next;
                 nextIndex++;
@@ -168,10 +145,10 @@ public class MyLinkedList<E> implements Iterable<E> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        Node<E> curr = first;
-        while (curr != null) {
+        Node<E> curr = first.next;
+        while (curr != last) {
             sb.append(curr.item);
-            if (curr.next != null) sb.append(", ");
+            if (curr.next != last) sb.append(", ");
             curr = curr.next;
         }
         sb.append("]");
