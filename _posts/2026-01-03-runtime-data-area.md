@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "[JVM Internals] Memory Model (Runtime Data Area)"
+title: "Runtime Data Area"
 date: 2026-01-03 07:35 +0900
 categories:
-- Wiki
-- Language
+- Java Ecosystem
+- JVM Internal
 tags:
 - JVM
-- Memory Model
+- Runtime Data Area
 image:
   path: /assets/img/2026-01-03-12-32-12.png
 ---

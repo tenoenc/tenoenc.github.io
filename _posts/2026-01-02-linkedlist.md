@@ -1,18 +1,18 @@
 ---
 layout: post
-title: "[Data Structure] LinkedList"
+title: "Linked List"
 date: 2026-01-02 19:30 +0900
 categories:
-- Wiki
-- CS
+- Computer Science
+- Data Structure & Algorithm
 tags:
 - Data Structure
-- LinkedList
+- Linked List
 image:
   path: /assets/img/2026-01-03-02-04-29.png
 ---
 
-## LinkedList & Array
+## Linked List & Array
 
 연결 리스트는 임의의 메모리 공간에 있는 요소를 연결하여 저장하는 자료구조입니다. 배열과의 비교를 통해 연결 리스트를 더 쉽게 이해할 수 있습니다.
 
