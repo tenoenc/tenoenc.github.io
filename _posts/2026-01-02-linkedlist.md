@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Linked List"
+title: "[Data Structure] Linked List"
 date: 2026-01-02 19:30 +0900
 categories:
 - Computer Science
