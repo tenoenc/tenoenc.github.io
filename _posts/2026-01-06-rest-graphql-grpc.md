@@ -236,7 +236,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
 위 명세에서 알 수 있듯, gRPC는 단방향(Unary) 요청뿐만 아니라 클라이언트 스트리밍, 서버 스트리밍, 그리고 양방향 스트리밍이라는 4가지 통신 모델을 네이티브하게 지원합니다. 이는 실시간 주가 데이터나 대용량 파일 전송처럼 지속적인 데이터 흐름이 필요한 서비스 구축 시, REST로는 흉내 내기 어려운 강력한 유연성을 제공합니다.
 
-## 아키텍처 선택의 예술: Trade-off 분석
+## Trade-off 분석
 
 엔지니어링의 정수는 완벽한 기술을 찾는 것이 아니라, 현재의 비즈니스 맥락과 시스템 환경에서 최적의 **트레이드오프(Trade-off)**를 선택하는 데 있습니다. REST, GraphQL, gRPC 중 무엇이 더 우월한지를 묻는 것은 우문이며, 우리가 해결해야 할 병목의 위치가 어디인지를 먼저 파악하는 것이 현명한 엔지니어의 자세입니다.
 
@@ -312,8 +312,8 @@ public class ArchitectureConsultant {
 
 ## References
 
-* **[GraphQL]** Thinking in Graphs - https://graphql.org/learn/thinking-in-graphs/
-* **[PayPal]** GraphQL a success story for PayPal Checkout - https://developer.paypal.com/community/blog/graphql-a-success-story-for-paypal-checkout/
-* **[gRPC]** Core concepts, architecture and lifecycle - https://grpc.io/docs/what-is-grpc/core-concepts/
-* **[Protocol Buffers]** Encoding Mechanism - https://protobuf.dev/programming-guides/encoding/
-* **[Microsoft]** Backends for Frontends pattern - https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends
+* **[GraphQL]** [Thinking in Graphs](https://graphql.org/learn/thinking-in-graphs/)
+* **[PayPal]** [GraphQL a success story for PayPal Checkout](https://developer.paypal.com/community/blog/graphql-a-success-story-for-paypal-checkout/)
+* **[gRPC]** [Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)
+* **[Protocol Buffers]** [Protocol Buffers Encoding](https://protobuf.dev/programming-guides/encoding/)
+* **[Microsoft]** [Backends for Frontends pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends)
