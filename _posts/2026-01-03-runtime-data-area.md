@@ -37,11 +37,7 @@ Frame (스택 프레임) 메서드가 호출될 때마다 하나의 프레임이
 
 #### Local Variable Array
 
-0부터 시작하는 인덱스를 가진 배열입니다.
-
-**Slot**
-
-기본 단위는 `Slot`입니다.
+0부터 시작하는 인덱스를 가진 배열입니다. 기본 단위는 `Slot`입니다.
 - 1 Slot: `boolean`, `byte`, `char`, `short`, `int`, `float`, `reference`, `returnAddress`
 - 2 Slot: `long`, `double`
 

@@ -4,8 +4,9 @@ title: "[OS] Process와 Thread"
 date: 2026-01-05 20:59 +0900
 categories:
 - Computer Science
-- Operating System & Hardware
+- Operating System & Computer Structure
 tags:
+- Operating System
 - Process
 - Thread
 image:
@@ -232,8 +233,6 @@ void write_cr3(unsigned long long val) {
 }
 ```
 
-> **시니어의 관점**
-> 
 > 고성능 서버 애플리케이션을 설계할 때, 무조건 스레드 수를 늘리는 것이 답이 아닌 이유가 여기에 있습니다. 스레드가 CPU 코어 수보다 과도하게 많아지면, 하드웨어는 유의미한 연산을 처리하기보다 캐시를 비우고 주소 지도를 바꾸는 '살림살이 교체'에 더 많은 시간을 쓰게 됩니다.
 {: .prompt-tip }
 
@@ -371,34 +370,63 @@ int main() {
 * **데이터 오염**: 다음 요청을 배정받은 전혀 다른 사용자가 이전 사용자의 데이터를 참조하게 되는 보안 사고가 발생합니다.
 * **메모리 누수**: 스레드가 살아있는 한 `ThreadLocal`에 담긴 객체는 가비지 컬렉션(GC)의 대상이 되지 않아 서서히 힙 영역을 잠식합니다.
 
-> **시니어의 트러블슈팅**
-> 
 > `ThreadLocal` 오염은 재현이 어렵고 간헐적으로 발생하여 디버깅 난이도가 매우 높습니다. 따라서 비즈니스 로직의 마지막 단계(대개 Filter나 Interceptor)에서 반드시 `try-finally` 블록을 통해 명시적으로 `remove()`를 호출하는 설계를 강제해야 합니다.
 {: .prompt-warning }
 
 ```java
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/**
- * 부모 프로세스가 wait()을 호출하지 않고 잠들면, 
- * 먼저 종료된 자식은 Zombie(defunct) 상태가 됩니다.
- */
-int main() {
-    pid_t pid = fork();
+public class ThreadLocalPollutionDemo {
+    // 사용자 정보를 담는 ThreadLocal
+    private static final ThreadLocal<String> userContext = new ThreadLocal<>();
 
-    if (pid > 0) {
-        // 부모 프로세스: 자식의 종료를 수거하지 않고 60초간 대기
-        printf("Parent process (PID: %d) is sleeping...\n", getpid());
-        sleep(60); 
-    } else if (pid == 0) {
-        // 자식 프로세스: 즉시 종료
-        printf("Child process (PID: %d) is exiting...\n", getpid());
-        exit(0);
+    public static void main(String[] args) throws InterruptedException {
+        // 단일 스레드를 사용하는 풀 생성 (오염 재현을 위해)
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+
+        // 1. 첫 번째 작업: 사용자 A의 요청 처리
+        executor.submit(() -> {
+            userContext.set("User A (Admin)");
+            System.out.println("--- Task 1 실행 ---");
+            System.out.println("현재 스레드: " + Thread.currentThread().getName());
+            System.out.println("설정된 사용자: " + userContext.get());
+            
+            // 주의: 여기서 remove()를 호출하지 않고 작업을 끝냄
+        });
+
+        Thread.sleep(1000); // 작업 순서 보장을 위한 대기
+
+        // 2. 두 번째 작업: 사용자 B의 요청 처리
+        executor.submit(() -> {
+            System.out.println("\n--- Task 2 실행 ---");
+            System.out.println("현재 스레드: " + Thread.currentThread().getName());
+            
+            // 기대값은 null이어야 하지만, 이전 작업의 데이터가 남아있음 (오염)
+            String currentUser = userContext.get();
+            if (currentUser != null) {
+                System.err.println("❗보안 사고 발생: 이전 사용자의 데이터가 노출됨 -> " + currentUser);
+            } else {
+                System.out.println("안전함: 컨텍스트가 비어있음");
+            }
+        });
+
+        executor.shutdown();
     }
+}
+```
 
-    return 0;
+**명시적 리소스 해제**
+
+```java
+public void processRequest(String userId) {
+    try {
+        userContext.set(userId);
+        executeBusinessLogic();
+    } finally {
+        // 작업이 성공하든 실패하든, 스레드가 풀로 돌아가기 전에 반드시 제거
+        userContext.remove();
+    }
 }
 ```
 
