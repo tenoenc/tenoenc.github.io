@@ -475,8 +475,8 @@ $ ps -efl | grep defunct
 
 ## References
 
-* **[OSTEP]** Operating Systems: Three Easy Pieces - [Process Concept & VM Paging](https://pages.cs.wisc.edu/~remzi/OSTEP/)
-* **[ManyButFinite]** [Anatomy of a Program in Memory](https://manybutfinite.com/post/anatomy-of-a-program-in-memory/)
-* **[Eli Bendersky]** [Launching Linux threads and processes with clone](https://eli.thegreenplace.net/2018/launching-linux-threads-and-processes-with-clone/)
-* **[Frank Denneman]** [Memory Configuration & Scalability Blog Series](https://frankdenneman.nl/2015/02/18/memory-configuration-scalability-blog-series/)
-* **[OpenJDK]** [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+* [[OSTEP] Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
+* [[ManyButFinite] Anatomy of a Program in Memory](https://manybutfinite.com/post/anatomy-of-a-program-in-memory/)
+* [[Eli Bendersky] Launching Linux threads and processes with clone](https://eli.thegreenplace.net/2018/launching-linux-threads-and-processes-with-clone/)
+* [[Frank Denneman] Memory Configuration & Scalability Blog Series](https://frankdenneman.nl/2015/02/18/memory-configuration-scalability-blog-series/)
+* [[OpenJDK] JEP 444: Virtual Threads](https://openjdk.org/jeps/444)

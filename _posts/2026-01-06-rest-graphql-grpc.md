@@ -312,8 +312,8 @@ public class ArchitectureConsultant {
 
 ## References
 
-* **[GraphQL]** [Thinking in Graphs](https://graphql.org/learn/thinking-in-graphs/)
-* **[PayPal]** [GraphQL a success story for PayPal Checkout](https://developer.paypal.com/community/blog/graphql-a-success-story-for-paypal-checkout/)
-* **[gRPC]** [Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)
-* **[Protocol Buffers]** [Protocol Buffers Encoding](https://protobuf.dev/programming-guides/encoding/)
-* **[Microsoft]** [Backends for Frontends pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends)
+* [[GraphQL] Thinking in Graphs](https://graphql.org/learn/thinking-in-graphs/)
+* [[PayPal] GraphQL a success story for PayPal Checkout](https://developer.paypal.com/community/blog/graphql-a-success-story-for-paypal-checkout/)
+* [[gRPC] Core concepts, architecture and lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/)
+* [[Protocol Buffers] Protocol Buffers Encoding](https://protobuf.dev/programming-guides/encoding/)
+* [[Microsoft] Backends for Frontends pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends)

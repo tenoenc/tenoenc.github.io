@@ -10,6 +10,8 @@ tags:
 - Data Structure
 - Stack
 - Queue
+image:
+    path: /assets/img/2026-01-08-16-19-57.png
 ---
 
 소프트웨어 공학에서 Stack과 Queue는 흔히 '자료구조'라는 추상적 카테고리에 묶여 다루어지곤 합니다. 하지만 시스템 아키텍처의 심부로 내려가면, 이들은 단순한 데이터 보관 방식을 넘어 CPU와 메모리가 상호작용하는 물리적 통로 그 자체가 됩니다. PlanetScale의 분석에 따르면, 현대의 운영체제는 프로세스와 스레드라는 추상화를 통해 하드웨어를 관리하며, 이 과정에서 Stack은 스레드의 '개별적 기억'을, Queue는 시스템 전체의 '질서 있는 흐름'을 담당하는 하드웨어적 인터페이스로 기능합니다.
@@ -215,8 +217,8 @@ Stack과 Queue는 단순히 데이터를 쌓고 줄을 세우는 논리적 도�
 
 ## References
 
-* **[PlanetScale]** [Processes and Threads](https://planetscale.com/blog/processes-and-threads)
-* **[Toss Tech]** [캐시를 적용하기 까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)](https://toss.tech/article/34481)
-* **[Amazon Builders' Library]** [Timeouts, retries and backoff with jitter](https://aws.amazon.com/ko/builders-library/timeouts-retries-and-backoff-with-jitter/)
-* **[Oracle Docs]** [Java Queue Interface](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Queue.html)
-* **[Oracle Docs]** [Java Stack Class](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Stack.html)
+* [[PlanetScale] Processes and Threads](https://planetscale.com/blog/processes-and-threads)
+* [[Toss Tech] 캐시를 적용하기 까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)](https://toss.tech/article/34481)
+* [[Amazon Builders' Library] Timeouts, retries and backoff with jitter](https://aws.amazon.com/ko/builders-library/timeouts-retries-and-backoff-with-jitter/)
+* [[Oracle Docs] Java Queue Interface](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Queue.html)
+* [[Oracle Docs] Java Stack Class](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Stack.html)

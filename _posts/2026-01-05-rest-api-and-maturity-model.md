@@ -411,8 +411,8 @@ REST는 만능 열쇠가 아닙니다. 하지만 우리가 웹의 제약 조건�
 
 ## References
 
-* **[Roy Fielding]** [Architectural Styles and the Design of Network-based Software Architectures](https://roy.gbiv.com/pubs/dissertation/rest_arch_style.htm)
-* **[Roy Fielding]** [REST APIs must be hypertext-driven](https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)
-* **[Martin Fowler]** [Richardson Maturity Model: steps toward the glory of REST](https://martinfowler.com/articles/richardsonMaturityModel.html)
-* **[Microsoft]** [Microsoft REST API Guidelines - Deprecation & Versioning](https://github.com/microsoft/api-guidelines/blob/vNext/graph/Guidelines-deprecated.md)
-* **[IANA]** [Official Assignments of Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml)
+* [[Roy Fielding] Architectural Styles and the Design of Network-based Software Architectures](https://roy.gbiv.com/pubs/dissertation/rest_arch_style.htm)
+* [[Roy Fielding] REST APIs must be hypertext-driven](https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)
+* [[Martin Fowler] Richardson Maturity Model: steps toward the glory of REST](https://martinfowler.com/articles/richardsonMaturityModel.html)
+* [[Microsoft] Microsoft REST API Guidelines - Deprecation & Versioning](https://github.com/microsoft/api-guidelines/blob/vNext/graph/Guidelines-deprecated.md)
+* [[IANA] Official Assignments of Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml)
