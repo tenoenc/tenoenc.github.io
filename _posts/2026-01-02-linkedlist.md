@@ -602,7 +602,7 @@ class Main {
 }
 ```
 
-> [여기](https://github.com/tenoenc/tenoenc.github.io/blob/main/assets/code/MyLinkedList.java)에서 전체 코드를 확인할 수 있습니다.
+> [여기](https://github.com/tenoenc/studyhub/blob/main/src/posts/linkedlist/MyLinkedList.java)에서 전체 코드를 확인할 수 있습니다.
 {: .prompt-info }
 
 ## Summary
