@@ -30,7 +30,7 @@ image:
 
 가장 직관적인 구현은 고정된 크기의 배열을 사용하는 것입니다. 메모리 상에서 데이터가 빈틈없이 나란히 배치되기 때문에, CPU는 다음 데이터가 어디에 있을지 명확히 예측할 수 있습니다.
 
-[IMAGE_ID_01: 나노바나나 스타일 - 배열 기반 스택의 메모리 구조. 연속된 칸에 데이터가 담겨 있고, 가장 상단을 가리키는 SP(Stack Pointer)가 Push/Pop에 따라 위아래로 움직이는 모습]
+![](/assets/img/2026-01-10-19-43-04.png)
 
 배열 기반 스택은 인덱스 접근만으로 모든 연산이 $O(1)$에 완료되는 압도적인 성능을 보여줍니다. 하지만 치명적인 한계가 있습니다. 바로 '유리 천장'이라 불리는 Stack Overflow입니다. 선언 시점에 정해진 메모리 경계를 넘어서는 순간, 시스템은 더 이상 데이터를 받아들일 수 없게 됩니다. 이는 하드웨어 자원이 극도로 제한된 임베디드 환경에서 여전히 중요한 설계 고려 요소입니다.
 
@@ -48,7 +48,57 @@ Interview Cake의 분석에 따르면, 이는 '분할 상환(Amortized)'의 관�
 
 연결 리스트 기반 스택은 이론적으로 메모리가 허용하는 한 무한히 커질 수 있으며, 배열처럼 한꺼번에 큰 공간을 미리 점유할 필요도 없습니다. 하지만 세상에 공짜는 없습니다. 포인터를 저장하기 위한 추가 메모리가 필요하며, 무엇보다 '캐시 지역성(Cache Locality)'을 잃게 됩니다. 데이터가 메모리 여기저기 흩어져 있기 때문에 CPU는 다음 노드를 찾기 위해 매번 메인 메모리까지 손을 뻗어야 하며, 이는 배열 기반 구현에 비해 유의미한 성능 저하를 야기합니다.
 
-[CODE_ID_01: 배열과 연결 리스트를 이용한 Stack의 두 가지 구현 방식 비교]
+```java
+/**
+ * 고정 크기 배열을 기반으로 한 고성능 제네릭 스택입니다.
+ * LIFO(Last-In, First-Out) 원칙을 물리적 인덱스 제어로 구현합니다.
+ */
+public class ArrayStack<T> {
+    private T[] storage;
+    private int top;
+    private final int capacity;
+
+    @SuppressWarnings("unchecked")
+    public ArrayStack(int capacity) {
+        this.capacity = capacity;
+        // Java 제네릭 배열 생성 제약으로 인해 Object 배열 생성 후 캐스팅
+        this.storage = (T[]) new Object[capacity];
+        this.top = -1; // 빈 스택을 의미하는 초기 인덱스
+    }
+
+    public void push(T item) {
+        if (isFull()) {
+            throw new RuntimeException("Stack Overflow: 스택의 가용 용량을 초과했습니다.");
+        }
+        storage[++top] = item;
+    }
+
+    public T pop() {
+        if (isEmpty()) {
+            throw new RuntimeException("Stack Underflow: 빈 스택에서 데이터를 꺼낼 수 없습니다.");
+        }
+        T item = storage[top];
+        storage[top--] = null; // 메모리 누수 방지를 위한 참조 해제
+        return item;
+    }
+
+    public T peek() {
+        return isEmpty() ? null : storage[top];
+    }
+
+    public boolean isEmpty() {
+        return top == -1;
+    }
+
+    public boolean isFull() {
+        return top == capacity - 1;
+    }
+
+    public int size() {
+        return top + 1;
+    }
+}
+```
 
 > **속도의 연속성과 공간의 유연성**
 >
@@ -71,7 +121,7 @@ Interview Cake의 분석에 따르면, 이는 '분할 상환(Amortized)'의 관�
 
 엔지니어들은 이 $O(n)$의 마찰력을 제거하기 위해 배열의 끝과 처음을 이어 붙이는 기하학적 해결책을 고안했습니다. 바로 환형 큐(Circular Queue)입니다.
 
-[IMAGE_ID_02: 나노바나나 스타일 - Circular Queue의 논리적 순환 구조. 선형 배열의 양 끝이 서로 맞닿아 도넛 형태를 이루고 있으며, front와 rear 포인터가 시계 방향으로 회전하며 데이터를 추적하는 모습]
+![](/assets/img/2026-01-10-19-41-53.png)
 
 환형 큐에서는 데이터를 앞으로 당기지 않습니다. 대신 '출구(Front)'와 '입구(Rear)'를 가리키는 포인터만 이동시킵니다. 배열의 마지막 인덱스에 도달하면 다음 인덱스를 다시 0으로 돌려보내는 모듈러(`%`) 연산이 이 마법의 핵심입니다.
 
@@ -85,7 +135,62 @@ $rear = (rear + 1) \pmod{size}$
 
 이 방식은 환형 큐와 같은 복잡한 인덱스 계산이나 공간 낭비가 없으며, 이론적으로 무한한 확장이 가능합니다. 하지만 각 노드가 다음 노드의 주소를 담아야 하므로 배열 대비 약 2배 이상의 메모리를 소모하며, 빈번한 노드 생성과 삭제는 가비지 컬렉션(GC)이나 메모리 할당자에게 부담을 줍니다.
 
-[CODE_ID_02: 모듈러 연산을 활용한 Circular Queue와 이중 포인터를 이용한 Linked Queue 구현]
+```java
+/**
+ * 고정된 크기의 배열 내에서 인덱스를 순환시켜 메모리 효율을 극대화한 순환 큐입니다.
+ * FIFO(First-In, First-Out) 논리를 기반으로 동작합니다.
+ */
+public class CircularQueue<T> {
+    private final T[] storage;
+    private int front; // 데이터를 꺼낼 위치
+    private int rear;  // 데이터를 넣을 위치
+    private int count; // 현재 큐에 담긴 요소의 개수
+    private final int capacity;
+
+    @SuppressWarnings("unchecked")
+    public CircularQueue(int capacity) {
+        this.capacity = capacity;
+        this.storage = (T[]) new Object[capacity];
+        this.front = 0;
+        this.rear = 0;
+        this.count = 0;
+    }
+
+    public void enqueue(T item) {
+        if (isFull()) {
+            throw new RuntimeException("Queue Overflow: 자원이 고갈되었습니다.");
+        }
+        storage[rear] = item;
+        // 배열의 끝에 도달하면 다시 0번 인덱스로 회전
+        rear = (rear + 1) % capacity;
+        count++;
+    }
+
+    public T dequeue() {
+        if (isEmpty()) {
+            throw new RuntimeException("Queue Underflow: 처리할 요청이 존재하지 않습니다.");
+        }
+        T item = storage[front];
+        storage[front] = null; // GC를 돕기 위한 참조 해제
+        // 인덱스를 순환시켜 논리적 연속성 확보
+        front = (front + 1) % capacity;
+        count--;
+        return item;
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
+    }
+
+    public boolean isFull() {
+        return count == capacity;
+    }
+
+    public int size() {
+        return count;
+    }
+}
+```
 
 ### 하드웨어와 자료구조의 마찰
 
@@ -113,7 +218,7 @@ $rear = (rear + 1) \pmod{size}$
 1. **Enqueue**: 데이터를 무조건 `inStack`에 쌓습니다. 이 단계에서는 스택의 본질인 LIFO를 그대로 따릅니다.
 2. **Dequeue**: `outStack`에서 데이터를 꺼냅니다. 만약 `outStack`이 비어 있다면, `inStack`에 쌓인 모든 데이터를 하나씩 팝(Pop)하여 `outStack`으로 옮깁니다. 이 과정에서 데이터의 물리적 순서가 완전히 뒤집히며 FIFO의 질서가 탄생합니다.
 
-[IMAGE_ID_03: 나노바나나 스타일 - 두 개의 스택을 이용한 큐 구현. 왼쪽 스택에서 오른쪽 스택으로 데이터가 옮겨지며 순서가 반전되는 논리적 흐름도]
+![](/assets/img/2026-01-10-19-42-05.png)
 
 Stanford CS166의 분석에 따르면, 이 구조는 얼핏 보기에 데이터를 옮길 때마다 $O(n)$의 비용이 발생하여 비효율적으로 보일 수 있습니다. 하지만 분할 상환 분석(Amortized Analysis)을 적용하면 놀라운 결과가 도출됩니다. 모든 데이터 원소는 일생 동안 단 한 번 `inStack`에 들어가고, 단 한 번 `outStack`으로 옮겨지며, 단 한 번 `outStack`에서 나옵니다. 즉, $n$개의 요청에 대해 전체 연산량은 $3n$에 불과하며, 개별 연산의 평균 비용은 여전히 $O(1)$입니다.
 
@@ -123,7 +228,85 @@ Stanford CS166의 분석에 따르면, 이 구조는 얼핏 보기에 데이터�
 
 새로운 데이터가 들어올 때마다(Push), 보조 큐를 활용하여 기존 데이터를 모두 뒤로 밀어내고 새 데이터를 가장 앞(Front)에 배치하는 전략을 취합니다. 이 경우 매번 삽입할 때마다 $O(n)$의 비용이 발생합니다. 혹은 꺼낼 때(Pop) 마지막 원소만 남을 때까지 다른 큐로 데이터를 옮기는 방식을 택할 수도 있지만, 어떤 방식을 선택하든 스택으로 큐를 만들 때와 같은 '분할 상환의 마법'은 일어나지 않습니다.
 
-[CODE_ID_03: Stack 기반 Queue(Amortized O(1))와 Queue 기반 Stack(O(n))의 구현 코드 비교]
+```java
+/**
+ * 노드 간의 양방향 연결을 통해 크기 제약 없이 확장 가능한 데크입니다.
+ * 스택(LIFO)과 큐(FIFO)의 역할을 동시에 수행할 수 있는 다목적 자료구조입니다.
+ */
+public class LinkedDeque<T> {
+    private static class Node<T> {
+        private T data;
+        private Node<T> prev;
+        private Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
+
+    public LinkedDeque() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    public void addFirst(T item) {
+        Node<T> newNode = new Node<>(item);
+        if (isEmpty()) {
+            head = tail = newNode;
+        } else {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+        }
+        size++;
+    }
+
+    public void addLast(T item) {
+        Node<T> newNode = new Node<>(item);
+        if (isEmpty()) {
+            head = tail = newNode;
+        } else {
+            newNode.prev = tail;
+            tail.next = newNode;
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public T removeFirst() {
+        if (isEmpty()) throw new RuntimeException("Deque Underflow: 데이터가 존재하지 않습니다.");
+        T data = head.data;
+        head = head.next;
+        if (head == null) tail = null;
+        else head.prev = null;
+        size--;
+        return data;
+    }
+
+    public T removeLast() {
+        if (isEmpty()) throw new RuntimeException("Deque Underflow: 데이터가 존재하지 않습니다.");
+        T data = tail.data;
+        tail = tail.prev;
+        if (tail == null) head = null;
+        else tail.next = null;
+        size--;
+        return data;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public int size() {
+        return size;
+    }
+}
+```
 
 ### 논리적 우아함과 구현의 마찰력
 
