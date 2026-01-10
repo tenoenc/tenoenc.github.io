@@ -2,6 +2,7 @@
 layout: post
 title: "[Data Structure] Linked List"
 date: 2026-01-02 19:30 +0900
+math: true
 categories:
 - Computer Science
 - Data Structure & Algorithm

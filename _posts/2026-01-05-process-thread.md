@@ -2,6 +2,7 @@
 layout: post
 title: "[OS] Process와 Thread"
 date: 2026-01-05 20:59 +0900
+math: true
 categories:
 - Computer Science
 - Operating System & Computer Structure

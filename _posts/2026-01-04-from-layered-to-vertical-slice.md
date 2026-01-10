@@ -2,6 +2,7 @@
 layout: post
 title: "[System Design] Layered에서 Vertical Slice까지"
 date: 2026-01-04 22:18 +0900
+math: true
 categories:
 - Backend Engineering
 - System Design

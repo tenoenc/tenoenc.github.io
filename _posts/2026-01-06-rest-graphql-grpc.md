@@ -2,6 +2,7 @@
 layout: post
 title: "[Web] REST vs GraphQL vs gRPC"
 date: 2026-01-06 00:35 +0900
+math: true
 categories:
 - Computer Science
 - Network

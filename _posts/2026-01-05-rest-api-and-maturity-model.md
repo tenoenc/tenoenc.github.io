@@ -2,6 +2,7 @@
 layout: post
 title: "[Web] REST API와 성숙도 모델"
 date: 2026-01-05 23:28 +0900
+math: true
 categories:
 - Computer Science
 - Network

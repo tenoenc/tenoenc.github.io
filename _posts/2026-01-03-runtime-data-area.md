@@ -2,6 +2,7 @@
 layout: post
 title: "[JVM Internal] Runtime Data Area"
 date: 2026-01-03 07:35 +0900
+math: true
 categories:
 - Java Ecosystem
 - JVM Internal
