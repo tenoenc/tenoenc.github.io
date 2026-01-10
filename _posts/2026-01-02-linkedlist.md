@@ -12,7 +12,9 @@ image:
   path: /assets/img/2026-01-03-02-04-29.png
 ---
 
-## Linked List & Array
+## 🧩 Linked List
+
+### Linked List & Array
 
 연결 리스트는 임의의 메모리 공간에 있는 요소를 연결하여 저장하는 자료구조입니다. 배열과의 비교를 통해 연결 리스트를 더 쉽게 이해할 수 있습니다.
 
@@ -30,7 +32,7 @@ scores[2] = 3;
 
 하지만 배열은 컴파일 시점에 크기를 지정해야 하기 때문에, 계속해서 요소를 추가해야 하는 런타임 환경에서는 적절하지 않습니다. 이러한 단점은 동적 할당을 통해 어느정도 극복할 수 있지만 재할당 비용 및 메모리 낭비라는 문제가 여전히 존재합니다. 연결 리스트를 이용하면 이 문제를 완벽하게 해결할 수 있습니다.
 
-## Structure
+### Structure
 
 연결 리스트는 노드(`Node`)라는 단위를 사용하여 요소를 저장합니다. `Node`는 `data`와 `next`로 구성되어 있습니다. `next`는 다음 `Node` 객체 자체를 가리키는 참조입니다.
 
@@ -41,7 +43,7 @@ class Node:
         self.next = None
 ```
 
-## Iteration & Length
+### Iteration & Length
 
 ![](/assets/img/2026-01-03-01-56-13.png)
 
@@ -80,10 +82,11 @@ print(length(head)) # 3
 
 `head`를 직접 움직이지 않고, `current`를 지연 변수에 복사해서 움직이는 게 핵심입니다. 이 패턴은 데이터를 찾거나, 출력하거나, 수정하는 모든 로직의 기본이 됩니다.
 
-> `current = current.next`를 잊어버리면 무한 루프에 빠질 수 있습니다.
-{: .prompt-warning }
+`current = current.next`를 잊어버리면 무한 루프에 빠질 수 있으니 주의합니다.
 
-## 작동하지 않는 Push
+## 🧩 Programming Philosophy
+
+### 작동하지 않는 Push
 
 기술적 관점에서 C에서 리스트 구축 시 리스트의 맨 앞에 데이터를 추가할 때 흔히 겪는 실수가 있습니다.
 
@@ -107,7 +110,7 @@ int main() {
 
 함수에서 `head`를 바꿔도, 함수 밖의 원본 `head`가 바뀌지는 않습니다. `WrongPush()`의 `head`는 `main()`의 `head`와 별도의 스택 공간에 위치하기 때문이죠.
 
-### Sol 1. 명시적 반환 사용 (Functional Approach)
+#### Sol 1. 명시적 반환 사용 (Functional Approach)
 
 이중 포인터를 사용하여 포인터에 대한 역참조 연산을 통해 원본 포인터에 접근할 수 있습니다.
 
@@ -143,7 +146,7 @@ head = push(head, 2)
 print(length(head)) # 2
 ```
 
-### Sol 2. Wrapper Class 사용 (OOP Approach)
+#### Sol 2. Wrapper Class 사용 (OOP Approach)
 
 `head`를 클래스로 감싸서 관리하면, `head`는 클래스의 멤버 변수로서 힙 공간에 위치하기 때문에 수정이 자유로워집니다. 실무에서는 이 방법이 더 권장됩니다.
 
@@ -163,12 +166,12 @@ ll.push(2)
 print(ll.head.data) # 2
 ```
 
-## Implementation Strategies
+### Implementation Strategies
 
-### A. Head에 추가하기 (Stack)
+#### A. Head에 추가하기 (Stack)
 앞서 본 `push`를 계속 호출하는 방식입니다. 코드는 간단하지만, 데이터가 역순으로 저장됩니다. 예를 들어, 1, 2, 3 순으로 입력하면 3, 2, 1 순으로 저장됩니다.
 
-### B. Tail 포인터와 특수 케이스 (Queue)
+#### B. Tail 포인터와 특수 케이스 (Queue)
 순서를 지키려면 뒤쪽에 붙여야 합니다. 매번 끝까지 찾아가지 않으려면 마지막 노드를 가리키는 `tail` 포인터를 유지해야 합니다.
 
 하지만 여기엔 치명적인 단점이 있는데, **"첫 번째 노드일 때"와 "그 이후일 때"의 코드가 다릅니다.**
@@ -196,7 +199,7 @@ print(head.data) # 1
 
 케이스를 별도로 처리한다는 점에서 조금 아쉬운 전략입니다.
 
-### C. Dummy Node (가장 우아한 해결책)
+#### C. Dummy Node (가장 우아한 해결책)
 
 빈 껍데기 노드(Dummy)를 하나 만들고 시작하면, `head`가 `None`인지 검사할 필요가 없습니다.
 
@@ -217,7 +220,7 @@ print(head.data) # 1
 
 이 방식은 **"모든 노드는 앞 노드의 `next`에 붙는다"** 는 규칙을 첫 번째 노드에도 강제로 적용시켜 코드를 단순화합니다.
 
-## Local Reference (C언어 특화)
+### Local Reference
 
 더미 노드 없이 모든 노드를 동일하게 처리할 수 있는 C언어의 독특한 기법입니다. `tail` 노드를 가리키는 게 아니라, 마지막 링크(`next` 포인터 자체)의 주소를 가리킵니다.
 
@@ -242,12 +245,14 @@ int main() {
 }
 ```
 
+> **파이썬의 메모리 주소 조작 및 참조 제한**
+> 
 > 파이썬은 변수의 메모리 주소를 직접 조작하거나, `next` 필드 자체의 참조를 가져오는 기능이 없습니다.
 {: .prompt-info }
 
-## Copy
+### Copy
 
-### 기본 접근 (Iterative) + Dummy Node 활용
+### Iterative + Dummy Node 활용
 
 원본 리스트를 순회(`current`)하면서 새 리스트(`new_list`)를 만듭니다. 이 때 Dummy Node를 쓰면 코드가 매우 깔끔해집니다.
 
@@ -266,7 +271,7 @@ def copy_list(head):
     return dummy.next
 ```
 
-### 재귀적 접근 (Recursive)
+#### 재귀적 접근 (Recursive)
 
 ```python
 def copy_list_recursive(head):
@@ -279,6 +284,8 @@ def copy_list_recursive(head):
     return new_node
 ```
 
+> **파이썬의 재귀 한도와 리스트 크기 제약**
+> 
 > 리스트가 길면 파이썬의 재귀 한도(Recursion Limit)에 걸릴 수 있다는 점에 주의합니다.
 {: .prompt-warning }
 

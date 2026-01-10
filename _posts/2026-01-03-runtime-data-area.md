@@ -26,6 +26,8 @@ JVM은 동시에 여러 실행 스레드를 지원할 수 있으며, 각 스레�
 
 만약 자바 스레드가 `native` 메서드(C/C++)를 호출하여 실행 중일 때, PC Register의 값은 Undefined 상태가 됩니다. 왜냐하면 Native 코드는 JVM의 통제 범위를 벗어난 OS 레벨의 명령어를 수행하기 때문입니다.
 
+> **JVM의 워드 크기 추상화**
+> 
 > PC는 플랫폼에 따라 워드 크기가 달라지지만, JVM 내부적으로는 추상화되어 있습니다.
 {: .prompt-info }
 
@@ -41,6 +43,8 @@ Frame (스택 프레임) 메서드가 호출될 때마다 하나의 프레임이
 - 1 Slot: `boolean`, `byte`, `char`, `short`, `int`, `float`, `reference`, `returnAddress`
 - 2 Slot: `long`, `double`
 
+> **32비트 JVM의 원자성 결여**
+> 
 > 2 Slot은 32비트 JVM 이슈 때문에 Atomic 하지 않을 수 있습니다.
 {: .prompt-warning }
 
@@ -261,6 +265,8 @@ JDK 7에서 8로 넘어가면서 클래스 메타데이터 관리의 주체가 J
 - 관리의 어려움
   - 힙의 일부이므로 Full GC가 발생할 때만 청소됩니다. 즉, 클래스 언로딩(Unloading) 비용이 매우 비쌉니다.
 
+> **JDK 7의 String Pool 위치 변경**
+> 
 > String Pool은 JDK 7에서 먼저 Heap으로 이사 갔습니다.
 {: .prompt-info }
 
