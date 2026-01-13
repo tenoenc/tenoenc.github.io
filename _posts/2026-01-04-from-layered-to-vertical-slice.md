@@ -10,8 +10,7 @@ tags:
 - System Design
 - Layered Architecture
 - Hexagonal Architecture
-- Vertical Slice
-- ArchUnit
+- Vertical Slice Architecture
 image:
   path: /assets/img/2026-01-05-02-10-54.png
 ---

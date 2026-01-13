@@ -9,6 +9,9 @@ categories:
 tags:
 - Distributed System
 - System Design
+- The 8 Fallacies
+- CAP
+- PACELC
 image:
     path: /assets/img/2026-01-13-16-02-21.png
 ---

@@ -9,6 +9,7 @@ categories:
 tags:
 - Computer Structure
 - CPU Cache
+- False Sharing
 image:
     path: /assets/img/2026-01-11-12-11-25.png
 ---
