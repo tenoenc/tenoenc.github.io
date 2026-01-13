@@ -286,7 +286,7 @@ JDK 7에서 8로 넘어가면서 클래스 메타데이터 관리의 주체가 J
   - Static 변수 (Class Variables): Heap으로 이동
     - **이제 static 변수도 GC의 직접적인 대상이 되며, Heap 메모리를 차지합니다.**
 
-## Summary (전체적인 상호작용)
+## Summary
 
 앞서 살펴본 `ResolutionTest` 코드가 실행될 때, JVM의 각 메모리 영역이 어떻게 상호작용하는지 정리해 보겠습니다.
 

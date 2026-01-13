@@ -30,7 +30,7 @@ image:
 
 운영체제는 수많은 프로세스를 관리하기 위해 각 프로세스의 모든 정보를 기록한 일종의 '신분증'을 만듭니다. 이를 **PCB(Process Control Block)**라고 부릅니다. 커널의 메모리 영역에 저장되는 이 구조체는 프로세스가 잠시 멈췄다가 다시 실행될 때, 이전의 상태를 완벽하게 복원하기 위한 모든 단서를 담고 있습니다.
 
-OSTEP(Operating Systems: Three Easy Pieces)에서 강조하듯, PCB에는 다음과 같은 핵심 데이터들이 포함됩니다.
+PCB에는 다음과 같은 핵심 데이터들이 포함됩니다.
 * **PID (Process Identifier)**: 시스템 내에서 프로세스를 식별하는 유일한 번호.
 * **Process State**: 생성(New), 준비(Ready), 실행(Running), 대기(Waiting), 종료(Terminated) 중 현재 상태.
 * **Program Counter (PC)**: 이 프로세스가 다음에 실행할 명령어의 주소.
@@ -156,7 +156,7 @@ int main() {
 
 공유의 편리함 뒤에는 '동기화'라는 혹독한 대가가 따릅니다. 여러 작업자가 하나의 자재 창고에서 동시에 물건을 꺼내려 할 때 충돌이 발생하듯, 멀티스레드 환경에서는 **경쟁 상태(Race Condition)**가 필연적으로 발생합니다.
 
-토스 테크의 캐시 최적화 사례에서 볼 수 있듯이, 수만 명의 사용자가 동시에 접근하는 고부하 시스템에서 데이터 정합성을 유지하는 것은 대단히 어려운 과제입니다. 한 스레드가 공유 변수를 읽고 수정하려는 찰나에 컨텍스트 스위칭이 일어나 다른 스레드가 값을 바꿔버리면, 시스템은 논리적 파국에 직면합니다.
+수만 명의 사용자가 동시에 접근하는 고부하 시스템에서 데이터 정합성을 유지하는 것은 대단히 어려운 과제입니다. 한 스레드가 공유 변수를 읽고 수정하려는 찰나에 컨텍스트 스위칭이 일어나 다른 스레드가 값을 바꿔버리면, 시스템은 논리적 파국에 직면합니다.
 
 > **잠금 장치와 병렬성 저하**
 > 
@@ -181,7 +181,7 @@ int main() {
 
 캐시 오염은 프로세스가 다시 실행될 때 '캐시 미스(Cache Miss)'의 폭발적인 증가로 이어집니다. CPU는 데이터를 찾기 위해 캐시보다 수백 배 느린 RAM까지 직접 찾아가야 하며, 이 기간 동안 프로세스의 연산 속도는 평소의 수분의 일 수준으로 곤두박질칩니다.
 
-특히 고부하 환경에서는 이 문제가 더욱 치명적입니다. 토스 테크의 사례처럼 TPS(초당 트랜잭션 수)가 1만 건을 넘어가는 시스템에서는 미세한 레이턴시 증가가 전체 처리량의 급격한 저하로 이어집니다.
+특히 고부하 환경에서는 미세한 레이턴시 증가가 전체 처리량의 급격한 저하로 이어집니다.
 * **TLB(Translation Lookaside Buffer) Flush**: 주소 변환 정보를 담은 TLB 또한 스위칭 시점에 무효화되거나 교체되어 메모리 접근 효율을 떨어뜨립니다.
 * **상태 복구 비용**: 캐시가 다시 유의미한 히트율(Hit Rate)을 기록할 때까지 걸리는 '콜드 캐시(Cold Cache)' 구간은 시스템 전체에 보이지 않는 성능 부채를 축적합니다.
 
@@ -335,6 +335,5 @@ public class VirtualThreadDemo {
 ## References
 
 * [[PlanetScale] Processes and Threads](https://planetscale.com/blog/processes-and-threads)
-* [[Toss Tech] 캐시를 적용하기 까지의 험난한 길](https://toss.tech/article/34481)
 * [[OSTEP] Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 * [[AWS Builders' Library] Timeouts, retries and backoff with jitter](https://aws.amazon.com/ko/builders-library/timeouts-retries-and-backoff-with-jitter/)
