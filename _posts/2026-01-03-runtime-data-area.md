@@ -8,7 +8,7 @@ categories:
 - JVM Internal
 tags:
 - JVM
-- Runtime Data Area
+- JVM Runtime Data Area
 image:
   path: /assets/img/2026-01-03-12-32-12.png
 ---
