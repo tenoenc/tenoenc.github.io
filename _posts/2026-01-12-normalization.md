@@ -47,11 +47,6 @@ image:
 
 정규화되지 않은 데이터 모델은 겉보기에 편리해 보일 수 있으나, 시간이 흐를수록 시스템의 무결성을 갉아먹는 '이상 현상(Anomaly)'이라는 대가를 치르게 됩니다. 이상 현상은 데이터의 중복성(Redundancy)이 논리적 일관성을 압도할 때 발생하는 설계의 부작용입니다. 마틴 파울러가 강조하듯, 나쁜 설계는 단순히 코드를 읽기 어렵게 만드는 것을 넘어, 데이터 자체가 스스로를 부정하게 만드는 모순의 늪으로 우리를 인도합니다.
 
-> **이상 현상의 근본 원인**
-> 
-> 데이터베이스 내의 한 가지 사실(Fact)은 반드시 한 곳에만 존재해야 합니다. 만약 하나의 정보가 여러 튜플에 흩어져 존재한다면, 그 정보를 조작하는 모든 행위는 잠재적인 데이터 오염의 통로가 됩니다. 이상 현상은 바로 이 '중복된 사실'을 동기화하지 못해 발생하는 논리적 파열음입니다.
-{: .prompt-warning }
-
 ### 삽입, 삭제, 갱신의 오류
 
 정규화가 결여된 릴레이션에서 우리는 크게 세 가지 형태의 치명적인 이상 현상과 마주하게 됩니다.
@@ -68,34 +63,34 @@ image:
 
 ```sql
 -- 1. 비정규화된 테이블 생성 (학번, 학생명, 과목번호, 과목명, 교수, 강의실)
--- PK는 (StudentID, CourseID)로 설정
-CREATE TABLE CourseRegistration (
-    StudentID INT,
-    StudentName VARCHAR(50),
-    CourseID VARCHAR(10),
-    CourseName VARCHAR(50),
-    Professor VARCHAR(50),
-    Room VARCHAR(20),
-    PRIMARY KEY (StudentID, CourseID)
+-- PK는 (student_id, course_id)로 설정
+CREATE TABLE course_registration (
+    student_id INT,
+    student_name VARCHAR(50),
+    course_id VARCHAR(10),
+    course_name VARCHAR(50),
+    professor VARCHAR(50),
+    room VARCHAR(20),
+    PRIMARY KEY (student_id, course_id)
 );
 
 -- 2. 삽입 이상 (Insertion Anomaly)
 -- 상황: 신입생 '김철수'를 등록하고 싶지만, 아직 수강신청을 하지 않음.
--- 문제: CourseID가 PK의 일부이므로 NULL을 허용하지 않아 학생 정보만으로는 삽입 불가.
-INSERT INTO CourseRegistration (StudentID, StudentName, CourseID) 
-VALUES (2024001, '김철수', NULL); -- Error: Column 'CourseID' cannot be null
+-- 문제: course_id가 PK의 일부이므로 NULL을 허용하지 않아 학생 정보만으로는 삽입 불가.
+INSERT INTO course_registration (student_id, student_name, course_id) 
+VALUES (2024001, '김철수', NULL); -- Error: Column 'course_id' cannot be null
 
 -- 3. 삭제 이상 (Deletion Anomaly)
 -- 상황: '이영희' 학생이 유일하게 수강하던 'Database' 과목을 취소함.
 -- 문제: 학생 정보를 삭제하면 'Database' 과목의 교수(안드레)와 강의실(B101) 정보까지 시스템에서 증발함.
-DELETE FROM CourseRegistration WHERE StudentID = 2024002;
+DELETE FROM course_registration WHERE student_id = 2024002;
 -- 결과적으로 'Database' 과목에 대한 모든 메타데이터가 사라짐.
 
 -- 4. 갱신 이상 (Update Anomaly)
 -- 상황: '안드레' 교수의 강의실이 'B101'에서 'C303'으로 변경됨.
 -- 문제: 해당 교수의 과목을 듣는 모든 학생의 튜플을 수정해야 함. 하나라도 누락되면 데이터 불일치 발생.
-UPDATE CourseRegistration SET Room = 'C303' 
-WHERE Professor = '안드레' AND StudentID = 2024003; 
+UPDATE course_registration SET room = 'C303' 
+WHERE professor = '안드레' AND student_id = 2024003;
 -- 2024004 학생의 튜플은 여전히 'B101'로 남아있어 논리적 모순 발생.
 ```
 
@@ -168,74 +163,74 @@ BCNF는 "모든 결정자는 반드시 후보키여야 한다"는 강력한 규�
 
 ```sql
 -- [Initial: 비정규화 상태]
--- Orders (OrderID, CustomerID, CustomerName, Items[ItemID, ItemName, Qty])
--- 문제: Items 속성이 원자적이지 않음 (다중값 속성)
+-- orders (order_id, customer_id, customer_name, items[item_id, item_name, quantity])
+-- 문제: items 속성이 원자적이지 않음 (다중값 속성)
 
 -- [Step 1: 제1정규형 (1NF)]
 -- 원칙: 모든 속성은 원자값을 가져야 함.
-CREATE TABLE Order_1NF (
-    OrderID INT,
-    CustomerID INT,
-    CustomerName VARCHAR(50),
-    ItemID INT,
-    ItemName VARCHAR(50),
-    Quantity INT,
-    PRIMARY KEY (OrderID, ItemID)
+CREATE TABLE order_1nf (
+    order_id INT,
+    customer_id INT,
+    customer_name VARCHAR(50),
+    item_id INT,
+    item_name VARCHAR(50),
+    quantity INT,
+    PRIMARY KEY (order_id, item_id)
 );
 
 -- [Step 2: 제2정규형 (2NF)]
 -- 원칙: 부분 함수 종속 제거 (기본키의 일부에만 종속된 속성 분리)
--- (OrderID, ItemID) -> Quantity (완전 종속)
--- OrderID -> CustomerID, CustomerName (부분 종속)
--- ItemID -> ItemName (부분 종속)
+-- (order_id, item_id) -> quantity (완전 종속)
+-- order_id -> customer_id, customer_name (부분 종속)
+-- item_id -> item_name (부분 종속)
 
-CREATE TABLE Order_Header ( -- 주문 기본 정보
-    OrderID INT PRIMARY KEY,
-    CustomerID INT,
-    CustomerName VARCHAR(50)
+CREATE TABLE order_header ( -- 주문 기본 정보
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    customer_name VARCHAR(50)
 );
 
-CREATE TABLE Item ( -- 아이템 마스터
-    ItemID INT PRIMARY KEY,
-    ItemName VARCHAR(50)
+CREATE TABLE item ( -- 아이템 마스터
+    item_id INT PRIMARY KEY,
+    item_name VARCHAR(50)
 );
 
-CREATE TABLE Order_Items ( -- 주문 상세 (완전 종속)
-    OrderID INT,
-    ItemID INT,
-    Quantity INT,
-    PRIMARY KEY (OrderID, ItemID),
-    FOREIGN KEY (OrderID) REFERENCES Order_Header(OrderID),
-    FOREIGN KEY (ItemID) REFERENCES Item(ItemID)
+CREATE TABLE order_items ( -- 주문 상세 (완전 종속)
+    order_id INT,
+    item_id INT,
+    quantity INT,
+    PRIMARY KEY (order_id, item_id),
+    FOREIGN KEY (order_id) REFERENCES order_header(order_id),
+    FOREIGN KEY (item_id) REFERENCES item(item_id)
 );
 
 -- [Step 3: 제3정규형 (3NF)]
 -- 원칙: 이행적 함수 종속 제거 (일반 속성 간의 종속 제거)
--- Order_Header에서 OrderID -> CustomerID 이고 CustomerID -> CustomerName 임.
+-- order_header에서 order_id -> customer_id 이고 customer_id -> customer_name 임.
 
-CREATE TABLE Customer ( -- 고객 마스터로 분리
-    CustomerID INT PRIMARY KEY,
-    CustomerName VARCHAR(50)
+CREATE TABLE customer ( -- 고객 마스터로 분리
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(50)
 );
 
-ALTER TABLE Order_Header DROP COLUMN CustomerName; -- 중복 제거
-ALTER TABLE Order_Header ADD FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID);
+ALTER TABLE order_header DROP COLUMN customer_name;
+ALTER TABLE order_header ADD FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
 
 -- [Step 4: BCNF]
 -- 원칙: 모든 결정자는 후보키여야 함.
 -- 만약 (학번, 과목) -> 교수 이고 교수 -> 과목 인 관계가 있다면,
 -- 결정자인 '교수'가 후보키가 아니므로 테이블을 분리함.
 
-CREATE TABLE Professor_Subject (
-    Professor VARCHAR(50) PRIMARY KEY,
-    SubjectName VARCHAR(50)
+CREATE TABLE professor_subject (
+    professor VARCHAR(50) PRIMARY KEY,
+    subject_name VARCHAR(50)
 );
 
-CREATE TABLE Student_Course (
-    StudentID INT,
-    Professor VARCHAR(50),
-    PRIMARY KEY (StudentID, Professor),
-    FOREIGN KEY (Professor) REFERENCES Professor_Subject(Professor)
+CREATE TABLE student_course (
+    student_id INT,
+    professor VARCHAR(50),
+    PRIMARY KEY (student_id, professor),
+    FOREIGN KEY (professor) REFERENCES professor_subject(professor)
 );
 ```
 
