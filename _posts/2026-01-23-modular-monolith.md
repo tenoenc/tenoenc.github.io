@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[System Design] Modular Monolith"
+title: "[System Design] Modular Monolith Architecture"
 date: 2026-01-23 06:42 +0900
 math: true
 categories:
